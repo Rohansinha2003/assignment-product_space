@@ -8,30 +8,28 @@ const INITIAL_FORM = {
   dueDate: '',
 };
 
+const getInitialForm = (task) => {
+  if (!task) return INITIAL_FORM;
+  return {
+    title: task.title || '',
+    description: task.description || '',
+    status: task.status || 'pending',
+    priority: task.priority || 'medium',
+    dueDate: task.dueDate || '',
+  };
+};
+
 const TaskModal = ({ isOpen, onClose, onSubmit, task = null, loading = false }) => {
-  const [form, setForm] = useState(INITIAL_FORM);
-  const [errors, setErrors] = useState({});
+  const [form, setForm] = useState(() => getInitialForm(task));
+  const [errors, setErrors] = useState(() => ({}));
   const titleRef = useRef(null);
 
   const isEdit = !!task;
 
   useEffect(() => {
-    if (isOpen) {
-      if (task) {
-        setForm({
-          title: task.title || '',
-          description: task.description || '',
-          status: task.status || 'pending',
-          priority: task.priority || 'medium',
-          dueDate: task.dueDate || '',
-        });
-      } else {
-        setForm(INITIAL_FORM);
-      }
-      setErrors({});
-      setTimeout(() => titleRef.current?.focus(), 100);
-    }
-  }, [isOpen, task]);
+    if (!isOpen) return;
+    setTimeout(() => titleRef.current?.focus(), 100);
+  }, [isOpen]);
 
   // Close on Escape
   useEffect(() => {

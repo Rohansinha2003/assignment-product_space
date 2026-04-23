@@ -58,6 +58,8 @@ const DashboardPage = () => {
   }, [filters]);
 
   useEffect(() => {
+    // This effect intentionally triggers state updates to sync with the API (external system).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTasks();
   }, [fetchTasks]);
 
@@ -330,6 +332,7 @@ const DashboardPage = () => {
 
       {/* Task Modal */}
       <TaskModal
+        key={`${modalOpen ? 'open' : 'closed'}-${editingTask?.id ?? 'new'}`}
         isOpen={modalOpen}
         onClose={handleCloseModal}
         onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
