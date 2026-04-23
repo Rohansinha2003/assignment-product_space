@@ -187,6 +187,57 @@ Supported query params for `GET /api/tasks`:
 
 ---
 
+## Deployment (Option B: Railway + Netlify)
+
+### Backend on Railway
+
+1. Create a new Railway project and deploy from this GitHub repository.
+2. Set **Root Directory** to `server`.
+3. Railway should auto-detect:
+   - Build: `npm install`
+   - Start: `npm start`
+4. Add a PostgreSQL service in Railway.
+5. Set backend environment variables:
+   - `PORT` = `5000` (Railway may override internally; that is fine)
+   - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` (from Railway Postgres)
+   - `DB_SCHEMA` = `taskflow`
+   - `JWT_SECRET` = strong random secret
+   - `JWT_EXPIRES_IN` = `7d`
+   - `CLIENT_URLS` = your Netlify URL(s), comma-separated
+
+Example:
+
+```env
+CLIENT_URLS=https://your-site.netlify.app,https://your-branch-preview.netlify.app
+```
+
+Your API base URL will look like:
+
+`https://<railway-service>.up.railway.app/api`
+
+### Frontend on Netlify
+
+1. Create a new site from GitHub on Netlify.
+2. Use these build settings:
+   - **Base directory**: `client`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `dist`
+3. Add environment variable in Netlify:
+   - `VITE_API_BASE_URL` = `https://<railway-service>.up.railway.app/api`
+4. Deploy.
+
+`client/netlify.toml` already includes SPA route fallback.
+
+### Final Verification
+
+- Open frontend URL on Netlify
+- Confirm auth signup/login works
+- Confirm task CRUD works
+- Confirm backend health check:
+  - `https://<railway-service>.up.railway.app/api/health`
+
+---
+
 ## License
 
 This project is open-source and available under the MIT License.
